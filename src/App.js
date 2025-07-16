@@ -1,12 +1,12 @@
 import './App.css';
 import { useEffect } from 'react';
-const proto = require('./grpc/StockFeed_pb.js');
-const grpc = require('./grpc/StockFeed_grpc_web_pb.js');
+const { Empty } = require('./grpc/StockFeed_pb.js');
+const { StockFeedClient } = require('./grpc/StockFeed_grpc_web_pb.js');
+
 function App() {
   useEffect(() => {
-    const request = new proto.Empty();
-    const client = new grpc.StockFeedClient('http://localhost:8080');
-
+    const client = new StockFeedClient('http://localhost:8080');
+    const request = new Empty();
     const stream = client.streamPrices(request, {});
 
     stream.on('data', (response) => {

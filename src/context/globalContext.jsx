@@ -1,6 +1,6 @@
-import { Empty } from '../grpc/StockFeed_pb.js';
+import { StockRequest } from '../grpc/StockFeed_pb.js';
 import { StockFeedClient } from '../grpc/StockFeed_grpc_web_pb.js';
-import { createContext, useState, useContext, useEffect,useRef } from 'react';
+import { createContext, useState, useContext, useEffect, useRef } from 'react';
 
 const GlobalContext = createContext();
 
@@ -11,9 +11,9 @@ export const GlobalProvider = ({ children }) => {
     const [selectedStock, setSelectedStock] = useState("AAPL");
     const startStream = () => {
         const client = new StockFeedClient('http://localhost:8080');
-        const request = new Empty();
-        // const request = new StockRequest();
-        // request.setSymbol(selectedStock); // need to work on the backend to handle this
+        // const request = new Empty();
+        const request = new StockRequest();
+        request.setSymbol(selectedStock); // need to work on the backend to handle this
         const stream = client.streamPrices(request, {});
         streamRef.current = stream;
 
@@ -25,13 +25,17 @@ export const GlobalProvider = ({ children }) => {
         stream.on('end', () => console.log('✅ Stream ended.'));
     };
     useEffect(() => {
+        if (streamRef.current) {
+            streamRef.current.cancel();
+            streamRef.current = null;
+        }
         if (!isPaused) {
-            setStockData([]); // clear old stock's data
+            setStockData([]);
             startStream();
         }
         return () => {
             if (streamRef.current) {
-                streamRef.current.cancel(); // stop stream
+                streamRef.current.cancel();
                 streamRef.current = null;
             }
         };

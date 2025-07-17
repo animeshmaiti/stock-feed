@@ -79,16 +79,16 @@ proto.org.price.stream.StockFeedPromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.org.price.stream.Empty,
+ *   !proto.org.price.stream.StockRequest,
  *   !proto.org.price.stream.PriceUpdate>}
  */
 const methodDescriptor_StockFeed_StreamPrices = new grpc.web.MethodDescriptor(
   '/org.price.stream.StockFeed/StreamPrices',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.org.price.stream.Empty,
+  proto.org.price.stream.StockRequest,
   proto.org.price.stream.PriceUpdate,
   /**
-   * @param {!proto.org.price.stream.Empty} request
+   * @param {!proto.org.price.stream.StockRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
@@ -99,7 +99,7 @@ const methodDescriptor_StockFeed_StreamPrices = new grpc.web.MethodDescriptor(
 
 
 /**
- * @param {!proto.org.price.stream.Empty} request The request proto
+ * @param {!proto.org.price.stream.StockRequest} request The request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
  * @return {!grpc.web.ClientReadableStream<!proto.org.price.stream.PriceUpdate>}
@@ -116,7 +116,7 @@ proto.org.price.stream.StockFeedClient.prototype.streamPrices =
 
 
 /**
- * @param {!proto.org.price.stream.Empty} request The request proto
+ * @param {!proto.org.price.stream.StockRequest} request The request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
  * @return {!grpc.web.ClientReadableStream<!proto.org.price.stream.PriceUpdate>}

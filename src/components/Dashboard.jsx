@@ -42,6 +42,11 @@ const Dashboard = () => {
         }
     }, [isPaused]);
     useEffect(() => {
+        prevLength.current = 0;
+        setLabels([]);
+        setPrices([]);
+    }, [selectedStock]);
+    useEffect(() => {
         if (stockData.length > prevLength.current) {
             const newData = stockData.slice(prevLength.current);
             const newLabels = newData.map(item => item.date);
@@ -96,7 +101,7 @@ const Dashboard = () => {
                     <div className="bg-white border shadow-md p-4 rounded-[20px] flex flex-col gap-4">
                         <h2 className="text-lg font-semibold mb-2">Stocks</h2>
 
-                        {["AAPL", "GOOG", "MSFT"].map((symbol) => (
+                        {["AAPL", "RELIANCE", "TCS"].map((symbol) => (
                             <button
                                 key={symbol}
                                 onClick={() => setSelectedStock(symbol)}
@@ -123,7 +128,7 @@ const Dashboard = () => {
                 {/* Chart (3 columns) */}
                 <div className="col-span-3 h-full w-[800px]">
                     <div className="bg-[#1d2b42] border border-slate-500 shadow-md p-4 rounded-[20px]">
-                        <Line data={data} options={options}/>
+                        <Line data={data} options={options} />
                     </div>
                 </div>
             </div>

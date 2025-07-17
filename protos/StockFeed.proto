@@ -14,8 +14,10 @@ message PriceUpdate {
   int64 volume = 6;
 }
 
-message Empty {}
+message StockRequest {
+  string symbol = 1;
+}
 
 service StockFeed {
-  rpc StreamPrices(Empty) returns (stream PriceUpdate);
+  rpc StreamPrices(StockRequest) returns (stream PriceUpdate);
 }

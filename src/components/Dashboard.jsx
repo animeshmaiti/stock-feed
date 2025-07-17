@@ -1,3 +1,4 @@
+import 'chartjs-adapter-moment';
 import {
     Chart,
     CategoryScale,
@@ -8,15 +9,19 @@ import {
     Tooltip,
     Legend,
     ArcElement,
+    TimeScale,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
+import { useGlobalContext } from '../context/globalContext';
+Chart.defaults.color = '#fff';
 Chart.register(
     CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
+    TimeScale,
     Title,
     Tooltip,
     Legend,
@@ -24,30 +29,51 @@ Chart.register(
 );
 
 
-const Dashboard = ({ streamData, setIsPaused, isPaused }) => {
-
-    // close:126.6,
-    // date:"1/6/2021 16:00:00",
-    // high:131.05,
-    // low:126.38,
-    // open:127.72,
-    // volume:155087970
+const Dashboard = () => {
+    const { stockData, isPaused, setIsPaused, selectedStock, setSelectedStock } = useGlobalContext();
     const [labels, setLabels] = useState([]);
     const [prices, setPrices] = useState([]);
     const prevLength = useRef(0);
     useEffect(() => {
-        if (streamData.length > prevLength.current) {
-            const newData = streamData.slice(prevLength.current);
-            const newLabels = newData.map(item =>
-                moment(item.date).format("DD/MM/YYYY HH:mm:ss")
-            );
+        if (!isPaused) {
+            prevLength.current = 0;  // 👈 Reset tracking pointer
+            setLabels([]);           // 👈 Optional: clear chart labels
+            setPrices([]);           // 👈 Optional: clear chart prices
+        }
+    }, [isPaused]);
+    useEffect(() => {
+        if (stockData.length > prevLength.current) {
+            const newData = stockData.slice(prevLength.current);
+            const newLabels = newData.map(item => item.date);
             const newPrices = newData.map(item => item.close);
             setLabels(prev => [...prev, ...newLabels]);
             setPrices(prev => [...prev, ...newPrices]);
-            prevLength.current = streamData.length;
+            prevLength.current = stockData.length;
         }
-    }, [streamData]);
-
+    }, [stockData]);
+    const options = {
+        responsive: true,
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    displayFormats: {
+                        day: 'DD/MM/YYYY',
+                    },
+                },
+                ticks: {
+                    maxTicksLimit: 7,
+                    callback: function (value) {
+                        return moment(value).format('DD/MM/YYYY');
+                    },
+                },
+            },
+            y: {
+                beginAtZero: false,
+            },
+        },
+    };
     const data = {
         labels: labels,
         datasets: [
@@ -62,18 +88,45 @@ const Dashboard = ({ streamData, setIsPaused, isPaused }) => {
         ],
     };
     return (
-        <div className='w-full'>
-            <div className='grid grid-cols-5 gap-8'>
-                {/* Chart and Totals */}
-                <div className='col-span-3 h-[400px]'>
-                    <div className='bg-[#FCF6F9] border-2 border-white shadow-md p-4 rounded-[20px]'>
-                        <Line data={data} />
+        <div className="w-full mt-1">
+            <div className="flex justify-center gap-8">
+
+                {/* Sidebar (1 column) */}
+                <div className="col-span-1 h-full w-60">
+                    <div className="bg-white border shadow-md p-4 rounded-[20px] flex flex-col gap-4">
+                        <h2 className="text-lg font-semibold mb-2">Stocks</h2>
+
+                        {["AAPL", "GOOG", "MSFT"].map((symbol) => (
+                            <button
+                                key={symbol}
+                                onClick={() => setSelectedStock(symbol)}
+                                className={`px-4 py-2 rounded ${selectedStock === symbol
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-black hover:bg-blue-100"
+                                    }`}
+                            >
+                                {symbol}
+                            </button>
+                        ))}
+
+                        <hr className="my-4" />
+
+                        <button
+                            onClick={() => setIsPaused((prev) => !prev)}
+                            className="px-4 py-2 bg-purple-600 text-white rounded"
+                        >
+                            {isPaused ? "Resume" : "Pause"}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Chart (3 columns) */}
+                <div className="col-span-3 h-full w-[800px]">
+                    <div className="bg-[#1d2b42] border border-slate-500 shadow-md p-4 rounded-[20px]">
+                        <Line data={data} options={options}/>
                     </div>
                 </div>
             </div>
-            <button onClick={() => setIsPaused(prev => !prev)}>
-                {isPaused ? "Resume" : "Pause"}
-            </button>
         </div>
     )
 }

@@ -21,6 +21,7 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
+goog.exportSymbol('proto.org.price.stream.DateRange', null, global);
 goog.exportSymbol('proto.org.price.stream.PriceUpdate', null, global);
 goog.exportSymbol('proto.org.price.stream.StockRequest', null, global);
 /**
@@ -377,7 +378,8 @@ proto.org.price.stream.StockRequest.prototype.toObject = function(opt_includeIns
  */
 proto.org.price.stream.StockRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-symbol: jspb.Message.getFieldWithDefault(msg, 1, "")
+symbol: jspb.Message.getFieldWithDefault(msg, 1, ""),
+dateRange: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {
@@ -418,6 +420,10 @@ proto.org.price.stream.StockRequest.deserializeBinaryFromReader = function(msg, 
       var value = /** @type {string} */ (reader.readString());
       msg.setSymbol(value);
       break;
+    case 2:
+      var value = /** @type {!proto.org.price.stream.DateRange} */ (reader.readEnum());
+      msg.setDateRange(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -454,6 +460,13 @@ proto.org.price.stream.StockRequest.serializeBinaryToWriter = function(message, 
       f
     );
   }
+  f = message.getDateRange();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -474,5 +487,33 @@ proto.org.price.stream.StockRequest.prototype.setSymbol = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
+
+/**
+ * optional DateRange date_range = 2;
+ * @return {!proto.org.price.stream.DateRange}
+ */
+proto.org.price.stream.StockRequest.prototype.getDateRange = function() {
+  return /** @type {!proto.org.price.stream.DateRange} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {!proto.org.price.stream.DateRange} value
+ * @return {!proto.org.price.stream.StockRequest} returns this
+ */
+proto.org.price.stream.StockRequest.prototype.setDateRange = function(value) {
+  return jspb.Message.setProto3EnumField(this, 2, value);
+};
+
+
+/**
+ * @enum {number}
+ */
+proto.org.price.stream.DateRange = {
+  ALL: 0,
+  RECENT_MONTH: 1,
+  ONE_YEAR: 2,
+  FIVE_YEAR: 3
+};
 
 goog.object.extend(exports, proto.org.price.stream);

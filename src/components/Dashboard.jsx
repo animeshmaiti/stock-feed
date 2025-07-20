@@ -15,6 +15,7 @@ import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 import { useGlobalContext } from '../context/globalContext';
+import Sidebar from './Sidebar';
 Chart.defaults.color = '#fff';
 Chart.register(
     CategoryScale,
@@ -30,7 +31,7 @@ Chart.register(
 
 
 const Dashboard = () => {
-    const { stockData, isPaused, setIsPaused, selectedStock, setSelectedStock } = useGlobalContext();
+    const { stockData, isPaused, selectedStock, filterDate } = useGlobalContext();
     const [labels, setLabels] = useState([]);
     const [prices, setPrices] = useState([]);
     const prevLength = useRef(0);
@@ -45,7 +46,7 @@ const Dashboard = () => {
         prevLength.current = 0;
         setLabels([]);
         setPrices([]);
-    }, [selectedStock]);
+    }, [selectedStock, filterDate]);
     useEffect(() => {
         if (stockData.length > prevLength.current) {
             const newData = stockData.slice(prevLength.current);
@@ -97,33 +98,7 @@ const Dashboard = () => {
             <div className="flex justify-center gap-8">
 
                 {/* Sidebar (1 column) */}
-                <div className="col-span-1 h-full w-60">
-                    <div className="bg-white border shadow-md p-4 rounded-[20px] flex flex-col gap-4">
-                        <h2 className="text-lg font-semibold mb-2">Stocks</h2>
-
-                        {["AAPL", "RELIANCE", "TCS"].map((symbol) => (
-                            <button
-                                key={symbol}
-                                onClick={() => setSelectedStock(symbol)}
-                                className={`px-4 py-2 rounded ${selectedStock === symbol
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-100 text-black hover:bg-blue-100"
-                                    }`}
-                            >
-                                {symbol}
-                            </button>
-                        ))}
-
-                        <hr className="my-4" />
-
-                        <button
-                            onClick={() => setIsPaused((prev) => !prev)}
-                            className="px-4 py-2 bg-purple-600 text-white rounded"
-                        >
-                            {isPaused ? "Resume" : "Pause"}
-                        </button>
-                    </div>
-                </div>
+                <Sidebar />
 
                 {/* Chart (3 columns) */}
                 <div className="col-span-3 h-full w-[800px]">

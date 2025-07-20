@@ -5,6 +5,13 @@ package org.price.stream;
 option java_package = "org.price.stream";
 option java_multiple_files = true;
 
+enum DateRange{
+  ALL=0;
+  RECENT_MONTH=1;
+  ONE_YEAR=2;
+  FIVE_YEAR=3;
+}
+
 message PriceUpdate {
   string date = 1;
   double open = 2;
@@ -16,6 +23,7 @@ message PriceUpdate {
 
 message StockRequest {
   string symbol = 1;
+  DateRange date_range=2;
 }
 
 service StockFeed {

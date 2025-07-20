@@ -1,0 +1,5 @@
+protoc -I=protos --js_out=import_style=commonjs:./src/grpc --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./src/grpc protos/StockFeed.proto
+
+docker run -d --name envoy-grpcweb -p 8080:8080 -p 9901:9901 -v "${PWD}/envoy.yaml:/etc/envoy/envoy.yaml:ro" envoyproxy/envoy:v1.22.0
+
+https://www.kaggle.com/datasets/svaningelgem/nasdaq-daily-stock-prices

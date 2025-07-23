@@ -1,0 +1,8 @@
+"Dependency","Library Description","Purpose/Use Case"
+"io.grpc:grpc-netty-shaded","Netty-based transport for gRPC, with ""shaded"" dependencies to prevent conflicts.","Provides the network transport (HTTP/2) for running gRPC clients/servers."
+"com.google.protobuf:protobuf-java","Google's Protocol Buffers (protobuf) Java implementation.","Used for serializing/deserializing structured data in a language-neutral way."
+"io.grpc:grpc-stub","gRPC stubs for client/server communication.","Supplies base classes to make client calls and service implementations."
+"javax.annotation:javax.annotation-api","Standard Java annotations (like@Nonnull,@Generated).","Provides common Java API annotations used for documentation and tooling."
+"io.grpc:grpc-protobuf","Protocol Buffers integration for gRPC.","Enables gRPC to use protobuf for defining service interfaces and messages."
+"mysql:mysql-connector-java","Official MySQL JDBC driver.","Allows Java applications to connect to MySQL databases using JDBC."
+"io.github.cdimascio:dotenv-java","Java implementation of dotenv file (.env) parsing.","Loads environment variables from a.envfile into the Java application."
